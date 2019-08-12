@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,7 @@ public class EventService {
 
     private RestTemplate restTemplate;
     private String url;
-    //String jeśli chcesz gołęgo jsona, jeśli nie zrób klasę reprezentującą wpis i metoda bedzie zwracała listę
+
 
     public List findEvents(
             Map<SearchParameters, Object> searchParams) {
