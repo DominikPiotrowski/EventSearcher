@@ -1,7 +1,7 @@
 package com.dominikpiotrowski.eventSearcher.gui;
 
 import com.dominikpiotrowski.eventSearcher.Service.EventService;
-import com.dominikpiotrowski.eventSearcher.model.Event;
+import com.dominikpiotrowski.eventSearcher.Service.SearchParameters;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.html.H3;
@@ -16,17 +16,6 @@ import java.util.Map;
 
 @Route("search")
 public class SearchGUI extends HorizontalLayout {
-
-    public Map<String, Object> inputParams() {
-        Map<String, Object> parameters = new HashMap<>();
-
-        parameters.put("startDate", startDate.getValue());
-        parameters.put("endDate", endDate.getValue());
-        parameters.put("city", city.getValue());
-        parameters.put("name", name.getValue());
-
-        return inputParams();
-    }
 
     H3 header = new H3("Please specify seach parameters:");
     TextField name = new TextField("Name"); //te pola mają odp polom serwisu
@@ -48,9 +37,17 @@ public class SearchGUI extends HorizontalLayout {
         VerticalLayout buttonLayout = new VerticalLayout(header, submit, clear);
         add(formLayout, buttonLayout);
 
-        submit.click(eventService.findEvents(inputParams);
-
+        submit.addClickListener(clickEvent -> eventService.findEvents(inputParams()));
     }
 
+    public Map<SearchParameters, Object> inputParams() {
+        Map<String, Object> parameters = new HashMap<>();
 
+        parameters.put("startDate", startDate.getValue());
+        parameters.put("endDate", endDate.getValue());
+        parameters.put("city", city.getValue());
+        parameters.put("name", name.getValue());
+
+        return inputParams();
+    }
 }
