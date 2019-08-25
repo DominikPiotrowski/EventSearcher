@@ -1,23 +1,30 @@
 package com.dominikpiotrowski.eventSearcher.Service;
 
-import lombok.AllArgsConstructor;
+import com.dominikpiotrowski.eventSearcher.model.Event;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class EventService {
 
-    private RestTemplate restTemplate;
+    @Value("${event.search.service.url}")
     private String url;
 
+    private RestTemplate restTemplate;
 
-    public List findEvents(
+    public EventService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
+    public List<Event> findEvents(
             Map<SearchParameters, Object> searchParams) {
 
         Map<String, Object> parameters = new HashMap<>();
@@ -26,10 +33,13 @@ public class EventService {
         parameters.put("city", searchParams.get(SearchParameters.CITY));
         parameters.put("name", searchParams.get(SearchParameters.NAME));
 
+        // Nie wiem jak wygląda Twoja usługa, trochę w ciemno wprowadzałem zmiany
+        // w application properties zmień adres na odpowiedni
         ResponseEntity<List> response =
                 restTemplate.getForEntity(createUrl(parameters), List.class);
 
-        return response.getBody();
+
+        return (List<Event>) response.getBody();
     }
 
     private String createUrl(Map<String, Object> parameters) {

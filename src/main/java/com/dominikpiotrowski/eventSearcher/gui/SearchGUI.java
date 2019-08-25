@@ -2,8 +2,10 @@ package com.dominikpiotrowski.eventSearcher.gui;
 
 import com.dominikpiotrowski.eventSearcher.Service.EventService;
 import com.dominikpiotrowski.eventSearcher.Service.SearchParameters;
+import com.dominikpiotrowski.eventSearcher.model.Event;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -11,6 +13,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,21 +36,38 @@ public class SearchGUI extends HorizontalLayout {
         endDate.setLabel("Select end date");
         submit.setThemeName("primary");
 
-        HorizontalLayout formLayout = new HorizontalLayout(startDate, endDate, city, name);
-        VerticalLayout buttonLayout = new VerticalLayout(header, submit, clear);
-        add(formLayout, buttonLayout);
+        VerticalLayout mainView = new VerticalLayout(header);
 
-        submit.addClickListener(clickEvent -> eventService.findEvents(inputParams()));
+        HorizontalLayout searchParams = new HorizontalLayout(startDate, endDate, city, name);
+        HorizontalLayout buttonLayout = new HorizontalLayout(submit, clear);
+
+        Grid results = new Grid(Event.class);
+
+        mainView.add(searchParams, buttonLayout, results);
+        add(mainView);
+
+
+        submit.addClickListener(clickEvent -> {
+            results.setItems(eventService.findEvents(inputParams()));
+            results.getDataProvider().refreshAll();
+        });
     }
 
     public Map<SearchParameters, Object> inputParams() {
-        Map<String, Object> parameters = new HashMap<>();
+        Map<SearchParameters, Object> parameters = new HashMap<>();
 
-        parameters.put("startDate", startDate.getValue());
-        parameters.put("endDate", endDate.getValue());
-        parameters.put("city", city.getValue());
-        parameters.put("name", name.getValue());
+        LocalDate startDateValue = startDate.getValue() != null ? startDate.getValue() : LocalDate.now();
+        parameters.put(SearchParameters.START_DATE, startDateValue);
 
-        return inputParams();
+        LocalDate endDateValue = endDate.getValue() != null ? endDate.getValue() : LocalDate.now().plusDays(30);
+        parameters.put(SearchParameters.END_DATE, endDateValue);
+
+        String cityValue = city.getValue() != null ? city.getValue() : "";
+        parameters.put(SearchParameters.CITY, cityValue);
+
+        String nameValue = name != null ? name.getValue() : "";
+        parameters.put(SearchParameters.NAME, nameValue);
+
+        return parameters;
     }
 }
