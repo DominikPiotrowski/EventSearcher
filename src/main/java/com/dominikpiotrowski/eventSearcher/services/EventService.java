@@ -1,4 +1,4 @@
-package com.dominikpiotrowski.eventSearcher.Service;
+package com.dominikpiotrowski.eventSearcher.services;
 
 import com.dominikpiotrowski.eventSearcher.model.Event;
 import org.springframework.beans.factory.annotation.Value;
@@ -6,11 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class EventService {
@@ -37,7 +35,6 @@ public class EventService {
         // w application properties zmień adres na odpowiedni
         ResponseEntity<List> response =
                 restTemplate.getForEntity(createUrl(parameters), List.class);
-
 
         return (List<Event>) response.getBody();
     }

@@ -1,7 +1,7 @@
 package com.dominikpiotrowski.eventSearcher.gui;
 
-import com.dominikpiotrowski.eventSearcher.Service.EventService;
-import com.dominikpiotrowski.eventSearcher.Service.SearchParameters;
+import com.dominikpiotrowski.eventSearcher.services.EventService;
+import com.dominikpiotrowski.eventSearcher.services.SearchParameters;
 import com.dominikpiotrowski.eventSearcher.model.Event;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -17,7 +17,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
-@Route("search")
+@Route(value="search")
 public class SearchGUI extends HorizontalLayout {
 
     H3 header = new H3("Please specify seach parameters:");
@@ -26,7 +26,6 @@ public class SearchGUI extends HorizontalLayout {
     DatePicker startDate = new DatePicker("Start date");
     DatePicker endDate = new DatePicker("End date");
     Button submit = new Button("Submit");
-    Button clear = new Button("Clear");
 
     @Autowired
     public SearchGUI(EventService eventService) {
@@ -39,13 +38,12 @@ public class SearchGUI extends HorizontalLayout {
         VerticalLayout mainView = new VerticalLayout(header);
 
         HorizontalLayout searchParams = new HorizontalLayout(startDate, endDate, city, name);
-        HorizontalLayout buttonLayout = new HorizontalLayout(submit, clear);
+        HorizontalLayout buttonLayout = new HorizontalLayout(submit);
 
         Grid results = new Grid(Event.class);
 
         mainView.add(searchParams, buttonLayout, results);
         add(mainView);
-
 
         submit.addClickListener(clickEvent -> {
             results.setItems(eventService.findEvents(inputParams()));
