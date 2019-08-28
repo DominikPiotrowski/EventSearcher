@@ -6,9 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class EventService {
@@ -36,7 +35,15 @@ public class EventService {
         ResponseEntity<List> response =
                 restTemplate.getForEntity(createUrl(parameters), List.class);
 
-        return (List<Event>) response.getBody();
+        List<Event> results = (List<Event>) response.getBody().stream().map(x -> mapToEvent(x)).collect(Collectors.toList());
+        return results;
+    }
+
+    private Event mapToEvent(Object obj) {
+        LinkedHashMap x = (LinkedHashMap) obj;
+        return new Event(x.get("name").toString(),
+                x.get("city").toString(),
+                x.get("description").toString());
     }
 
     private String createUrl(Map<String, Object> parameters) {
@@ -47,7 +54,7 @@ public class EventService {
 
             if (parameters.get(key) != null) {
                 stringBuilder.append(key).append("=").append(parameters.get(key));
-                if (i <= parameters.keySet().size() - 1) {
+                if (i < parameters.keySet().size()) {
                     stringBuilder.append("&");
                 }
                 i++;
