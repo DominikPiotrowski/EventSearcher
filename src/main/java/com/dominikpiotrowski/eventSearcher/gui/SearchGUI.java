@@ -1,8 +1,8 @@
 package com.dominikpiotrowski.eventSearcher.gui;
 
+import com.dominikpiotrowski.eventSearcher.model.Event;
 import com.dominikpiotrowski.eventSearcher.services.EventService;
 import com.dominikpiotrowski.eventSearcher.services.SearchParameters;
-import com.dominikpiotrowski.eventSearcher.model.Event;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Route(value="search")
@@ -46,7 +47,8 @@ public class SearchGUI extends HorizontalLayout {
         add(mainView);
 
         submit.addClickListener(clickEvent -> {
-            results.setItems(eventService.findEvents(inputParams()));
+            List<Event> events = eventService.findEvents(inputParams());
+            results.setItems(events);
             results.getDataProvider().refreshAll();
         });
     }
