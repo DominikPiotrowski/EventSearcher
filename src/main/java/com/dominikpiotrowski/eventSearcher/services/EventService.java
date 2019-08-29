@@ -30,18 +30,21 @@ public class EventService {
         parameters.put("city", searchParams.get(SearchParameters.CITY));
         parameters.put("name", searchParams.get(SearchParameters.NAME));
 
-        // Nie wiem jak wygląda Twoja usługa, trochę w ciemno wprowadzałem zmiany
-        // w application properties zmień adres na odpowiedni
         ResponseEntity<List> response =
                 restTemplate.getForEntity(createUrl(parameters), List.class);
 
-        List<Event> results = (List<Event>) response.getBody().stream().map(x -> mapToEvent(x)).collect(Collectors.toList());
+        List<Event> results = (List<Event>) response.getBody()
+                .stream()
+                .map(x -> mapToEvent(x))
+                .collect(Collectors.toList());
         return results;
     }
 
     private Event mapToEvent(Object obj) {
         LinkedHashMap x = (LinkedHashMap) obj;
-        return new Event(x.get("name").toString(),
+
+        return new Event(
+                x.get("name").toString(),
                 x.get("city").toString(),
                 x.get("description").toString());
     }

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Component
-public class Provider implements I18NProvider {
+public class ProviderI18N implements I18NProvider {
 
 @Override
 public List<Locale> getProvidedLocales() {

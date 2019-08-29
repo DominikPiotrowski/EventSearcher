@@ -11,5 +11,4 @@ class EventSearchConfig {
     RestTemplate restTemplate() {
         return new RestTemplate();
     }
-
 }
